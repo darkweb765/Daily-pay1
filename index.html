@@ -1,1 +1,1774 @@
-index.html2
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ <title>DailyPay - Live Claim App</title>
+ <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+ <style>
+  /* --- General Styles --- */
+  * {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+  }
+
+  body,
+  html {
+   font-family: 'Segoe UI', Arial, sans-serif;
+   width: 100%;
+   height: 100%;
+   overflow-x: hidden;
+   /* Prevent horizontal scroll */
+   background-color: white;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+  }
+
+  .screen {
+   display: none;
+   /* All screens initially hidden */
+   width: 100%;
+   max-width: 400px; /* Set a max-width for a more app-like feel on desktop */
+   min-height: 100vh;
+   /* Use min-height for content flexibility */
+   justify-content: flex-start; /* Align content to the top */
+   align-items: center;
+   flex-direction: column;
+   /* Ensure content stacks vertically */
+   padding-bottom: 20px;
+   /* Add some padding at the bottom */
+   border: 1px solid #ccc; /* Optional: adds a border to visualize the app frame */
+   box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Optional: adds a subtle shadow */
+  }
+
+  /* --- Welcome Screen Styles --- */
+  .welcome-screen {
+   display: flex;
+   /* Initially show welcome screen */
+   background-color: #A8D5A2;
+   justify-content: center;
+  }
+
+  .container-welcome {
+   /* Renamed to avoid conflict with withdraw container */
+   background-color: #A8D5A2;
+   width: 100%;
+   height: 100%;
+   border-radius: 40px 40px 0 0;
+   position: relative;
+   overflow: hidden;
+   padding: 40px 20px 20px;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+  }
+
+  .top-logo {
+    text-align: center;
+  }
+
+  .top-logo h1 {
+   color: #00844D;
+   font-weight: bold;
+   font-size: 28px;
+  }
+
+  .cash-logo {
+   font-size: 28px;
+   margin-right: 5px;
+  }
+
+  .cash-text {
+   font-weight: 700;
+  }
+
+  .dailypay {
+   font-size: 48px;
+   font-weight: bold;
+   margin-top: 10px;
+  }
+
+  .daily {
+   color: #151d38;
+  }
+
+  .check {
+   color: #5f9969;
+  }
+
+  .pay {
+   color: #5f9969;
+   margin-left: 5px;
+  }
+
+  .description {
+   margin-top: 30px;
+   font-size: 16px;
+   color: #222;
+   line-height: 1.6;
+   text-align: center;
+  }
+
+  .money-animation {
+    position: relative;
+    width: 100px;
+    height: 60px;
+    margin: 40px 0 50px;
+  }
+
+  .money-animation .bill {
+   width: 30px;
+   height: 15px;
+   background-color: #00844D;
+   border-radius: 3px;
+   position: absolute;
+   opacity: 0.7;
+  }
+
+  .bill:nth-child(1) { top: 0; left: 10%; transform: rotate(15deg); }
+  .bill:nth-child(2) { top: 15%; left: 60%; transform: rotate(-10deg); }
+  .bill:nth-child(3) { top: 30%; left: 35%; transform: rotate(25deg); }
+  .bill:nth-child(4) { top: 45%; left: 80%; transform: rotate(-20deg); }
+
+  .buttons {
+   display: flex;
+   justify-content: space-around;
+   width: 100%;
+   gap: 20px;
+  }
+
+  button {
+   padding: 15px 0;
+   width: 45%;
+   border-radius: 25px;
+   font-size: 18px;
+   font-weight: bold;
+   cursor: pointer;
+   border: 2px solid #006b2c;
+   transition: 0.3s;
+  }
+
+  .register {
+   background-color: #006b2c;
+   color: #fff;
+  }
+
+  .login {
+   background-color: transparent;
+   color: #006b2c;
+  }
+
+  /* --- Form Screen Styles (Register/Login) --- */
+  .form-screen {
+   background-color: white;
+   padding: 40px 20px;
+   justify-content: center;
+  }
+
+  .form-box {
+   max-width: 400px;
+   width: 100%;
+  }
+
+  .form-box h2 {
+   text-align: center;
+   margin-bottom: 20px;
+   color: green;
+  }
+
+  .form-box label {
+   display: block;
+   margin-top: 15px;
+   font-weight: bold;
+  }
+
+  .form-box input {
+   width: 100%;
+   padding: 10px;
+   margin-top: 5px;
+   border: 1px solid #aaa;
+   border-radius: 8px;
+  }
+
+  .form-box .submit-button {
+   /* General style for form submit buttons */
+   margin-top: 20px;
+   width: 100%;
+   padding: 15px;
+   background-color: green;
+   color: white;
+   border: none;
+   border-radius: 25px;
+   font-size: 18px;
+   font-weight: bold;
+   cursor: pointer;
+  }
+
+  .form-box .submit-button:hover {
+   background-color: darkgreen;
+  }
+
+  /* --- Dashboard Styles (Claim App) --- */
+  .dashboard-screen {
+   background-color: #f3f3f3;
+   padding: 0;
+   /* Remove initial padding, sections have their own */
+  }
+
+  .dashboard-screen header {
+   background-color: #00423e;
+   color: white;
+   padding: 15px;
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   /* Align items vertically in the center */
+   width: 100%;
+   /* Full width header */
+  }
+
+  .header-left {
+   display: flex;
+   align-items: center;
+   gap: 10px;
+   /* Space between profile image and username */
+  }
+
+
+  .balance-section {
+   background-color: #00423e;
+   color: white;
+   margin: 20px;
+   border-radius: 20px;
+   padding: 20px;
+   text-align: center;
+   width: calc(100% - 40px);
+   /* Adjust width for margin */
+   max-width: 400px;
+   /* Limit width */
+  }
+
+  .badges {
+   display: flex;
+   gap: 6px;
+   justify-content: center;
+   margin-bottom: 10px;
+  }
+
+  .badge {
+   background-color: orange;
+   color: white;
+   border-radius: 10px;
+   padding: 2px 8px;
+   font-size: 10px;
+  }
+
+  .badge-top {
+   background-color: #4e6cef;
+  }
+
+  .withdraw-dashboard-btn {
+   background-color: orange;
+   color: white;
+   border: none;
+   padding: 10px 30px;
+   border-radius: 25px;
+   font-size: 16px;
+   margin-top: 10px;
+   cursor: pointer;
+  }
+
+  .claim-section {
+   display: grid;
+   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+   /* Responsive grid */
+   gap: 20px;
+   padding: 20px;
+   justify-items: center;
+   width: 100%;
+   max-width: 800px;
+   /* Limit overall width */
+  }
+
+  .claim-card {
+   background-color: white;
+   border-radius: 15px;
+   padding: 15px;
+   width: 140px;
+   /* Fixed width for cards */
+   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+   text-align: center;
+  }
+
+  .claim-card p {
+   margin: 5px 0;
+   font-weight: bold;
+  }
+
+  .claim-card button {
+   background-color: #00423e;
+   color: white;
+   border: none;
+   border-radius: 20px;
+   padding: 10px;
+   width: 100%;
+   margin-top: 10px;
+   cursor: pointer;
+  }
+
+  .claim-card button:disabled {
+   background-color: grey;
+   cursor: not-allowed;
+  }
+
+  #notification {
+   background-color: yellow;
+   padding: 10px;
+   display: none;
+   margin: 10px auto;
+   width: 80%;
+   border-radius: 10px;
+   text-align: center;
+   max-width: 400px;
+   /* Limit width */
+  }
+
+  #profileImage {
+   border-radius: 50%;
+   width: 30px;
+   height: 30px;
+   object-fit: cover;
+  }
+
+  #notificationCount {
+   position: absolute;
+   top: -5px;
+   right: -5px;
+   background-color: red;
+   color: white;
+   font-size: 10px;
+   border-radius: 50%;
+   padding: 2px 6px;
+   display: none;
+  }
+
+  /* --- Withdrawal Page Styles --- */
+  .withdraw-screen {
+    justify-content: flex-start;
+  }
+
+  .withdraw-container {
+   /* For the form part */
+   width: 100%;
+   max-width: 400px;
+   background-color: #ffffff;
+   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+   border-radius: 8px;
+   overflow: hidden;
+   margin-top: 20px;
+  }
+
+  .withdraw-screen .header {
+   /* Specific to header within withdraw flow */
+   background-color: #4CAF50;
+   color: white;
+   padding: 15px 20px;
+   font-size: 20px;
+   text-align: center;
+   display: flex;
+   /* Make it a flex container */
+   justify-content: space-between;
+   /* Space out items */
+   align-items: center;
+   /* Vertically align items */
+  }
+
+  .withdraw-screen .header .back-arrow,
+  .withdraw-screen .header .cancel-icon {
+   /* Apply styles to both back and cancel icons */
+   cursor: pointer;
+   /* Adjust size and color for the back arrow */
+  }
+
+  .withdraw-screen .header .back-arrow img,
+  .withdraw-screen .header .cancel-icon img {
+   /* Apply styles to images within both icons */
+   width: 24px;
+   /* Adjust size as needed */
+   height: 24px;
+   filter: invert(1);
+   /* Makes the black icon white */
+  }
+
+  .withdraw-screen .header .header-title {
+   flex-grow: 1;
+   /* Allows title to take available space */
+   text-align: center;
+   /* Center the title within its space */
+   margin-left: -24px;
+   /* Offset the space taken by the back arrow on the left for true centering */
+  }
+
+
+  .withdraw-screen .form-section {
+   /* Specific to form section within withdraw flow */
+   padding: 20px;
+  }
+
+  .withdraw-screen .form-group {
+   margin-bottom: 15px;
+  }
+
+  .withdraw-screen .form-group input,
+  .withdraw-screen .form-group select {
+   width: 100%;
+   padding: 12px 10px;
+   border: 1px solid #ddd;
+   border-radius: 8px;
+   font-size: 16px;
+   box-sizing: border-box;
+   background-color: #fff;
+  }
+
+  .withdraw-screen .withdrawal-button {
+   width: 100%;
+   padding: 15px;
+   background-color: #4CAF50;
+   color: white;
+   border: none;
+   border-radius: 8px;
+   font-size: 18px;
+   cursor: pointer;
+  }
+
+  .withdraw-screen .buy-coupon-code {
+   text-align: center;
+   font-weight: 500;
+   /* Choose your desired color here: blue or red */
+   color: blue;
+   /* Changed to blue */
+   /* color: red; */
+   /* Uncomment this line and comment the above for red */
+   cursor: pointer;
+   margin-top: 15px;
+   /* Add some space above the link */
+  }
+
+  .withdraw-screen .message-screen,
+  .withdraw-screen .success-screen {
+   /* For success/error messages within withdraw flow */
+   background: white;
+   padding: 20px;
+   text-align: center;
+   max-width: 400px;
+   width: 100%;
+   border-radius: 8px;
+   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+   margin-top: 20px;
+   /* Give some space if shown standalone after form */
+   /* display: none; /* Initially hidden, controlled by JS */
+  }
+
+  /* Ensure only one part of withdraw screen is shown at a time by JS */
+  #mainForm {
+   display: block;
+  }
+
+  /* Default visible part of withdraw screen */
+  #successScreenWithdraw {
+   display: none;
+  }
+
+  #errorScreenWithdraw {
+   display: none;
+  }
+
+
+  .withdraw-screen .summary-title {
+   font-size: 22px;
+   font-weight: bold;
+   margin-bottom: 15px;
+  }
+
+  .withdraw-screen .summary-icon {
+   margin: 10px 0;
+  }
+
+  .withdraw-screen .summary-name {
+   font-size: 16px;
+   margin-top: 10px;
+  }
+
+  .withdraw-screen .summary-amount {
+   font-size: 26px;
+   font-weight: bold;
+   margin-bottom: 20px;
+  }
+
+  .withdraw-screen .summary-row {
+   display: flex;
+   justify-content: space-between;
+   font-size: 16px;
+   padding: 8px 0;
+   border-bottom: 1px solid #eee;
+  }
+
+  .withdraw-screen .summary-label {
+   font-weight: 500;
+  }
+
+  .withdraw-screen .done-btn {
+   background: green;
+   color: white;
+   padding: 15px;
+   border-radius: 50px;
+   border: none;
+   font-size: 18px;
+   width: 100%;
+   margin-top: 20px;
+   cursor: pointer;
+  }
+
+  .withdraw-screen .error-message {
+   font-size: 18px;
+   color: red;
+   margin: 20px 0;
+  }
+
+  .withdraw-screen .green-btn {
+   background-color: #4CAF50;
+   color: white;
+   padding: 12px;
+   margin-top: 10px;
+   border: none;
+   border-radius: 8px;
+   font-size: 16px;
+   width: 100%;
+   cursor: pointer;
+  }
+
+  .withdraw-screen .support-btn {
+   background-color: #007BFF;
+   color: white;
+   padding: 12px;
+   margin-top: 10px;
+   border: none;
+   border-radius: 8px;
+   font-size: 16px;
+   width: 100%;
+   cursor: pointer;
+  }
+
+  .withdraw-screen .care-btn {
+   background-color: #ff5722;
+   color: white;
+   padding: 12px;
+   margin-top: 10px;
+   border: none;
+   border-radius: 8px;
+   font-size: 16px;
+   width: 100%;
+   cursor: pointer;
+  }
+
+    /* Styles for the second code (Coupon Purchase Screen) */
+    .coupon-purchase-screen {
+      /* Ensure this screen takes the full height of its container */
+      min-height: 100vh;
+      background-color: #1a237e; /* Match the body background of the second code */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding-top: 30px; /* To account for the fixed top bar if present */
+    }
+
+    .coupon-purchase-screen .container,
+    .coupon-purchase-screen .payment-info,
+    .coupon-purchase-screen .loading-screen,
+    .coupon-purchase-screen .payment-confirmation-wrapper,
+    .coupon-purchase-screen .payment-not-confirmed,
+    .coupon-purchase-screen .opay-notice-screen {
+      background-color: white;
+      border-radius: 20px 20px 0 0;
+      padding: 30px;
+      width: 90%;
+      max-width: 400px;
+      display: none;
+      text-align: center;
+      margin-top: 20px; /* Adjust as needed for spacing */
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .coupon-purchase-screen h1 {
+      color: white;
+      margin: 0;
+      padding: 20px;
+      border-radius: 20px 20px 0 0;
+      background-color: #1a237e;
+      text-align: left;
+      font-size: 24px;
+      width: 100%; /* Ensure header takes full width within its container */
+    }
+
+    .coupon-purchase-screen .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .coupon-purchase-screen label {
+      display: block;
+      margin-bottom: 5px;
+      color: #333;
+      font-weight: bold;
+    }
+
+    .coupon-purchase-screen input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+      font-size: 16px;
+      color: #555;
+    }
+
+    .coupon-purchase-screen input[readonly] {
+      background-color: #f0f0f0;
+      cursor: not-allowed;
+    }
+
+    .coupon-purchase-screen button {
+      background-color: #1a237e;
+      color: white;
+      padding: 15px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 18px;
+      width: 100%;
+    }
+
+    .coupon-purchase-screen button:hover {
+      background-color: #0d1449;
+    }
+
+    .coupon-purchase-screen .note {
+      font-size: 16px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .coupon-purchase-screen .box {
+      border: 2px solid #ccc;
+      padding: 20px;
+      background-color: #f5f3f3;
+    }
+
+    .coupon-purchase-screen .info-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+
+    .coupon-purchase-screen .info-group span {
+      font-weight: bold;
+      display: block;
+      margin-top: 5px;
+    }
+
+    .coupon-purchase-screen .copy-btn {
+      float: right;
+      background-color: orange;
+      color: white;
+      padding: 4px 10px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      border-radius: 3px;
+    }
+
+    .coupon-purchase-screen .bottom-section {
+      border-top: 1px solid #999;
+      padding-top: 20px;
+      margin-top: 20px;
+    }
+
+    .coupon-purchase-screen .transfer-btn {
+      background-color: orange;
+      color: #0044aa;
+      font-weight: 600;
+      padding: 15px;
+      border: none;
+      margin-top: 15px;
+      width: 100%;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    /* Loading screen styles */
+    .coupon-purchase-screen .spinner {
+      border: 6px solid #eee;
+      border-top: 6px solid #1a237e;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      margin: 20px auto;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Payment Confirmation Screen styles */
+    .coupon-purchase-screen .payment-confirmation-wrapper {
+      padding: 0; /* Remove padding from the container itself */
+      border-radius: 20px; /* Adjust as needed */
+      overflow: hidden; /* Ensures border-radius applies to children */
+      margin-top: 30px; /* To account for the fixed top bar */
+    }
+
+    .coupon-purchase-screen .payment-confirmation-wrapper .header {
+      background-color: #fff; /* White background for the header */
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #eee;
+    }
+
+    .coupon-purchase-screen .payment-confirmation-wrapper .header .bank-transfer-text {
+      color: #333;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .coupon-purchase-screen .payment-confirmation-wrapper .header .cancel-btn {
+      color: #e57373; /* Light red color for cancel */
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .coupon-purchase-screen .payment-confirmation-wrapper .content {
+      background-color: #fff;
+      padding: 20px 30px;
+      text-align: center;
+    }
+
+    .coupon-purchase-screen .payment-confirmation-wrapper .amount-section {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .coupon-purchase-screen .payment-confirmation-wrapper .amount-section .logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #e0e0e0; /* Placeholder for the logo */
+      margin-right: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .coupon-purchase-screen .payment-confirmation-wrapper .amount-section .logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        border-radius: 50%;
+    }
+
+
+    .coupon-purchase-screen .payment-confirmation-wrapper .instruction {
+      font-size: 18px;
+      color: #333;
+      margin-bottom: 30px;
+      line-height: 1.5;
+    }
+
+    .coupon-purchase-screen .payment-confirmation-wrapper .loader-spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid orange; /* Orange color for the spinner */
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    .coupon-purchase-screen .payment-confirmation-wrapper .wait-text {
+      font-size: 16px;
+      color: #555;
+      margin-top: 10px;
+      margin-bottom: 30px;
+    }
+
+    .coupon-purchase-screen .payment-confirmation-wrapper .status-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #f8f8f8;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px 20px;
+      margin-bottom: 15px;
+    }
+
+    .coupon-purchase-screen .payment-confirmation-wrapper .status-box.completed {
+        background-color: #e6ffe6; /* Light green for completed */
+        border-color: #a3e6a3;
+    }
+
+    .coupon-purchase-screen .payment-confirmation-wrapper .status-box .status-text {
+      font-size: 16px;
+      color: #333;
+    }
+
+    .coupon-purchase-screen .payment-confirmation-wrapper .status-box .icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+    }
+
+    .coupon-purchase-screen .payment-confirmation-wrapper .status-box .icon.checked {
+      background-color: #4CAF50; /* Green checkmark background */
+      color: white;
+    }
+
+     .coupon-purchase-screen .payment-confirmation-wrapper .status-box .icon.loading {
+      background-color: transparent; /* No background for loading spinner */
+    }
+
+    /* Payment Not Confirmed Screen styles */
+    .coupon-purchase-screen .payment-not-confirmed {
+        padding: 30px;
+        border-radius: 20px;
+        margin-top: 30px;
+        background-color: #fff;
+    }
+    .coupon-purchase-screen .payment-not-confirmed h2 {
+        color: #d32f2f; /* Red for not confirmed */
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+    .coupon-purchase-screen .payment-not-confirmed p {
+        color: #555;
+        font-size: 16px;
+        margin-bottom: 25px;
+    }
+    .coupon-purchase-screen .payment-not-confirmed .contact-info {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 20px;
+        font-size: 16px;
+    }
+    .coupon-purchase-screen .payment-not-confirmed .contact-info img {
+        width: 24px;
+        height: 24px;
+    }
+    .coupon-purchase-screen .payment-not-confirmed .contact-info a {
+        color: #1a237e; /* Dark blue for link */
+        text-decoration: none;
+        font-weight: bold;
+    }
+    .coupon-purchase-screen .payment-not-confirmed .contact-info a:hover {
+        text-decoration: underline;
+    }
+
+    /* Additional styling for the main container to match the image's overall layout */
+    .coupon-purchase-screen .top-bar-placeholder {
+        background-color: black;
+        width: 100%;
+        height: 30px; /* Adjust as needed */
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+    }
+
+    /* New styles for Opay Notice Screen */
+    .coupon-purchase-screen .opay-notice-screen {
+        background-color: #fff8e1; /* Light yellowish background */
+        border: 2px solid #ffecb3; /* Slightly darker yellowish border */
+        border-radius: 15px;
+        padding: 30px;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        max-width: 450px;
+        width: 90%;
+        box-sizing: border-box;
+        margin-top: 30px; /* To account for the fixed top bar */
+    }
+
+    .coupon-purchase-screen .opay-notice-screen h2 {
+        color: #e65100; /* Dark orange for title */
+        font-size: 24px;
+        margin-bottom: 25px;
+        font-weight: bold;
+    }
+
+    .coupon-purchase-screen .opay-notice-screen p {
+        color: #333;
+        font-size: 16px;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
+    .coupon-purchase-screen .opay-notice-screen ol {
+        text-align: left;
+        padding-left: 20px;
+        margin-bottom: 25px;
+        color: #333;
+        font-size: 16px;
+        line-height: 1.8;
+    }
+
+    .coupon-purchase-screen .opay-notice-screen ol li {
+        margin-bottom: 10px;
+    }
+
+    .coupon-purchase-screen .opay-notice-screen .ok-button {
+        background-color: #ff9800; /* Orange color for OK button */
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 30px;
+        font-size: 18px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        width: auto; /* Allow button to size based on content */
+        display: inline-block; /* For centering */
+    }
+
+    .coupon-purchase-screen .opay-notice-screen .ok-button:hover {
+        background-color: #fb8c00; /* Slightly darker orange on hover */
+    }
+
+  /* --- Pop-up Styles for Insufficient Funds --- */
+  .popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    visibility: hidden; /* Hidden by default */
+    opacity: 0;
+    transition: visibility 0s, opacity 0.3s;
+  }
+
+  .popup-overlay.visible {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .popup-content {
+    background-color: white;
+    padding: 25px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 300px;
+    transform: scale(0.9);
+    transition: transform 0.3s ease-out;
+  }
+
+  .popup-overlay.visible .popup-content {
+    transform: scale(1);
+  }
+
+  .popup-message {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: #333;
+    font-weight: bold;
+  }
+
+  .popup-ok-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 25px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .popup-ok-button:hover {
+    background-color: #45a049;
+  }
+ </style>
+</head>
+
+<body>
+
+ <div class="screen welcome-screen" id="welcomeScreen">
+  <div class="container-welcome">
+   <div class="top-logo">
+    <h1><span class="cash-logo">💳</span><span class="cash-text">CASH</span></h1>
+    <h2 class="dailypay"><span class="daily">dai<span class="check">✓</span>ly</span><span class="pay">pay</span></h2>
+   </div>
+
+   <div class="description">
+    <p>Transfer to other Bank.</p>
+   </div>
+
+   <div class="money-animation">
+    <div class="bill"></div>
+    <div class="bill"></div>
+    <div class="bill"></div>
+    <div class="bill"></div>
+   </div>
+
+   <div class="buttons">
+    <button class="register" onclick="showScreen('registerScreen')">Register</button>
+    <button class="login" onclick="showScreen('loginScreen')">Login</button>
+   </div>
+  </div>
+ </div>
+
+ <div class="screen form-screen" id="registerScreen">
+  <form class="form-box" id="registerForm">
+   <h2>Register</h2>
+   <label for="regUsername">Username</label>
+   <input type="text" id="regUsername" required placeholder="Enter username" />
+
+   <label for="regEmail">Email</label>
+   <input type="email" id="regEmail" required placeholder="Enter email" />
+
+   <label for="regPassword">Password</label>
+   <input type="password" id="regPassword" required placeholder="Enter password" />
+
+   <button type="submit" class="submit-button">Register</button>
+   <div id="registerMessage" style="display: none; text-align: center; margin-top: 15px; color: green;">
+    Registering...
+   </div>
+  </form>
+ </div>
+
+ <div class="screen form-screen" id="loginScreen">
+  <form class="form-box" id="loginForm">
+   <h2>Login</h2>
+   <label for="email">Email</label>
+   <input type="email" id="email" required placeholder="Enter email" />
+
+   <label for="password">Password</label>
+   <input type="password" id="password" required placeholder="Enter password" />
+
+   <button type="submit" class="submit-button">Login</button>
+   <div id="loadingMessage" style="display: none; text-align: center; margin-top: 15px; color: green;">
+    Logging in, please wait...
+   </div>
+  </form>
+ </div>
+
+ <div class="screen dashboard-screen" id="dashboardScreen">
+  <header>
+   <div class="header-left">
+    <div style="position: relative;">
+     <label for="profileUpload">
+      <img id="profileImage" src="https://img.icons8.com/ios-glyphs/30/ffffff/user--v1.png" style="cursor: pointer;" />
+     </label>
+     <input type="file" id="profileUpload" accept="image/*" style="display: none;" />
+    </div>
+    <span id="usernameDisplay" style="color: white; font-weight: bold;"></span>
+   </div>
+
+   <div style="position: relative;">
+    <img src="https://img.icons8.com/ios-filled/30/000000/appointment-reminders--v1.png" style="filter: invert(1);" />
+    <span id="notificationCount">0</span>
+   </div>
+  </header>
+
+  <audio id="successSound" src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3" preload="auto"></audio>
+  <audio id="errorSound" src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" preload="auto"></audio>
+  <audio id="errorSound_general" src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" preload="auto"></audio>
+
+
+  <div id="notification">Claimed successfully</div>
+
+  <section class="balance-section">
+   <div class="badges">
+    <div class="badge badge-top">Top-Rated</div>
+    <div class="badge">New</div>
+   </div>
+   <h2><span id="balance">₦0.00</span></h2>
+   <p>Live Balance</p>
+   <button class="withdraw-dashboard-btn" onclick="showScreen('withdrawScreen')">Withdrawal</button>
+  </section>
+
+  <section class="claim-section" id="claimSection"></section>
+ </div>
+
+ <div class="screen withdraw-screen" id="withdrawScreen">
+  <div style="width: 100%; max-width: 400px; display: flex; flex-direction: column; align-items: center;">
+   <div class="withdraw-container" id="mainForm">
+    <div class="header">
+     <div class="back-arrow" onclick="showScreen('dashboardScreen')">
+      <img src="https://img.icons8.com/ios-glyphs/30/ffffff/back--v1.png" alt="Back" />
+     </div>
+     <div class="header-title">Transfer To Bank</div>
+     <div></div>
+    </div>
+    <div class="form-section">
+     <div class="form-group">
+      <input type="text" id="accountNumber" placeholder="Account Number">
+     </div>
+     <div class="form-group">
+      <select id="selectedBank">
+       <option value="">Select bank</option>
+       <option>Access Bank</option>
+       <option>Carbon Bank</option>
+       <option>FairMoney Bank</option>
+       <option>GTBank</option>
+       <option>Kuda Bank</option>
+       <option>Moniepoint Bank</option>
+       <option>OPay Bank</option>
+       <option>PalmPay Bank</option>
+       <option>Rubies Bank</option>
+       <option>UBA Bank</option>
+       <option>Vbank Bank</option>
+       <option>Wema Bank</option>
+       <option>Zenith Bank</option>
+      </select>
+     </div>
+     <div class="form-group">
+      <input type="text" id="accountName" placeholder="Account Name">
+     </div>
+     <div class="form-group">
+      <input type="text" id="amount" placeholder="Amount">
+     </div>
+     <div class="form-group">
+      <input type="text" id="couponCode" placeholder="Coupon Code">
+     </div>
+     <button class="withdrawal-button" id="initiateWithdrawal">Withdraw</button>
+     <div class="buy-coupon-code" onclick="showScreen('couponPurchaseScreen')">Buy coupon code</div>
+    </div>
+   </div>
+
+   <div class="success-screen" id="successScreenWithdraw">
+    <div class="summary-title">Transaction Summary</div>
+    <div class="summary-icon"><img src="https://img.icons8.com/emoji/96/000000/check-mark-emoji.png" width="80" /></div>
+    <div class="summary-name" id="summaryName"></div>
+    <div class="summary-amount" id="summaryAmount"></div>
+
+    <div class="summary-row">
+     <div class="summary-label">Reference No</div>
+     <div id="summaryRef"></div>
+    </div>
+    <div class="summary-row">
+     <div class="summary-label">Wallet Number</div>
+     <div id="summaryWalletNumber"></div>
+    </div>
+    <div class="summary-row">
+     <div class="summary-label">Wallet Name</div>
+     <div id="summaryBank"></div>
+    </div>
+    <div class="summary-row">
+     <div class="summary-label">Fees</div>
+     <div>₦0.00</div>
+    </div>
+    <button class="done-btn" onclick="returnToWithdrawForm()">Done</button>
+   </div>
+
+   <div class="message-screen" id="errorScreenWithdraw">
+    <div class="header" style="background-color: #f44336;">
+     <div class="cancel-icon" onclick="backToWithdrawFormFromError()"> <img src="https://img.icons8.com/ios-glyphs/30/ffffff/multiply.png" alt="Cancel" />
+     </div>
+     <div class="header-title">Error</div>
+     <div></div>
+    </div>
+    <div class="error-message" id="errorMessageText">Incorrect coupon code</div>
+    <button class="green-btn" onclick="showScreen('couponPurchaseScreen')">Buy Coupon</button>
+    <button class="support-btn" id="joinGroupBtn">Join WhatsApp Group</button>
+    <button class="care-btn" id="contactCustomerCareBtn">Contact Customer Care</button>
+   </div>
+  </div>
+ </div>
+
+ <div class="screen coupon-purchase-screen" id="couponPurchaseScreen">
+    <div class="top-bar-placeholder"></div>
+
+    <div class="container" id="formSection_coupon">
+      <h1>Daily Pay</h1>
+      <div class="form-group">
+        <label for="amount_coupon">Amount</label>
+        <input type="text" id="amount_coupon" value="₦6,000" readonly>
+      </div>
+      <div class="form-group">
+        <label for="fullName_coupon">Full Name</label>
+        <input type="text" id="fullName_coupon" placeholder="Your full name">
+      </div>
+      <div class="form-group">
+        <label for="email_coupon">Your Email Address</label>
+        <input type="email" id="email_coupon" placeholder="email address">
+      </div>
+      <button onclick="goToLoading_coupon()">Pay</button>
+    </div>
+
+    <div class="loading-screen" id="loadingScreen_coupon">
+      <h2>Processing Payment...</h2>
+      <div class="spinner"></div>
+      <p>Please wait while we prepare your payment instructions.</p>
+    </div>
+
+    <div class="opay-notice-screen" id="opayNoticeScreen_coupon">
+      <h2>Important payment notice:</h2>
+      <p>Please do not use Opay to make your payment. Our company does not authorize Opay for direct transfers from our platform. If you make a payment using Opay, your payment may not be confirmed.</p>
+      <p><strong>If you are using Opay:</strong></p>
+      <ol>
+        <li>Transfer the money to Anthem bank account.</li>
+        <li>Then use that bank account to complete your transaction.</li>
+      </ol>
+      <button class="ok-button" onclick="showPaymentDetails_coupon()">OK</button>
+    </div>
+
+
+    <div class="payment-info" id="paymentSection_coupon">
+      <div class="note">Please note: we do not accept any payment from Opay bank</div>
+      <div class="box">
+        <div class="info-group">
+          Amount
+          <span>NGN 6,000 <button class="copy-btn" onclick="copyText_coupon('6000')">Copy</button></span>
+        </div>
+        <div class="info-group">
+          Account Number
+          <span style="color: blue;">807 952 2338<button class="copy-btn" onclick="copyText_coupon('807 952 2338')">Copy</button></span>
+        </div>
+        <div class="info-group">
+          Bank Name
+          <span>Palmpay</span>
+        </div>
+        <div class="info-group">
+          Account Name
+          <span>DIVINE CHIGOIZRIM JONAH</span>
+        </div>
+        <div class="bottom-section">
+          <p>Pay to this specific account and get your coupon code</p>
+          <button class="transfer-btn" onclick="showPaymentConfirmation_coupon()">I have made this bank Transfer</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="payment-confirmation-wrapper" id="paymentConfirmationSection_coupon">
+      <div class="header">
+        <span class="bank-transfer-text">Bank Transfer</span>
+        <span class="cancel-btn">Cancel</span>
+      </div>
+      <div class="content">
+        <div class="amount-section">
+          <div class="logo">
+              <img src="https://via.placeholder.com/40/000000/FFFFFF?text=Logo" alt="Logo">
+          </div>
+          <div class="amount-details">
+            <div class="amount">NGN 6,000</div>
+            <div class="email" id="userEmailConfirm_coupon"></div> </div>
+        </div>
+        <p class="instruction">Proceed to your bank app to complete this Transfer</p>
+        <div class="loader-spinner"></div>
+        <p class="wait-text">Wait while we confirm your payment...</p>
+
+        <div class="status-box completed">
+          <span class="status-text">Payment Made</span>
+          <span class="icon checked">&#10003;</span>
+        </div>
+        <div class="status-box" id="confirmingPaymentBox_coupon">
+          <span class="status-text">Confirming Payment</span>
+          <span class="icon loading"><div class="loader-spinner" style="width:20px; height:20px; margin:0; border-width: 3px; border-top-color: orange;"></div></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="payment-not-confirmed" id="paymentNotConfirmedSection_coupon">
+      <h2>Payment Not Confirmed</h2>
+      <p>We couldn't confirm your payment at this time. Please ensure you have completed the bank transfer correctly.</p>
+      <p>If you need help, contact us here:</p>
+      <div class="contact-info">
+          <img src="https://img.icons8.com/ios-filled/50/000000/filled-message.png" alt="Email Icon" />
+          <a href="mailto:support@dailypay.com">dailypay619@gmail.com</a>
+      </div>
+    </div>
+ </div>
+
+ <div class="popup-overlay" id="insufficientFundsPopup">
+  <div class="popup-content">
+   <div class="popup-message" id="popupMessage"></div>
+   <button class="popup-ok-button" onclick="hideInsufficientFundsPopup()">OK</button>
+  </div>
+ </div>
+
+ <script>
+  // --- Screen Management ---
+  function showScreen(screenId) {
+   document.querySelectorAll('.screen').forEach(screen => {
+    screen.style.display = 'none';
+   });
+
+   const targetScreen = document.getElementById(screenId);
+   if (targetScreen) {
+    targetScreen.style.display = "flex"; // Show the target screen
+   }
+
+
+   if (screenId === "dashboardScreen") {
+    updateUsernameDisplay();
+    updateBalanceDisplay();
+    renderClaimCards();
+    updateNotificationDisplay();
+    startClaimTimer();
+   } else {
+    clearInterval(claimIntervalId); // Stop dashboard timer if not on dashboard
+   }
+
+   if (screenId === "withdrawScreen") {
+    document.getElementById("mainForm").style.display = "block"; 
+    document.getElementById("successScreenWithdraw").style.display = "none";
+    document.getElementById("errorScreenWithdraw").style.display = "none";
+   }
+
+   // Initialize the coupon purchase screen if navigated to
+   if (screenId === "couponPurchaseScreen") {
+      // Ensure only the initial form is shown when landing on this screen
+      document.getElementById('couponPurchaseScreen').querySelector('#formSection_coupon').style.display = 'block';
+      document.getElementById('couponPurchaseScreen').querySelector('#loadingScreen_coupon').style.display = 'none';
+      document.getElementById('couponPurchaseScreen').querySelector('#opayNoticeScreen_coupon').style.display = 'none';
+      document.getElementById('couponPurchaseScreen').querySelector('#paymentSection_coupon').style.display = 'none';
+      document.getElementById('couponPurchaseScreen').querySelector('#paymentConfirmationSection_coupon').style.display = 'none';
+      document.getElementById('couponPurchaseScreen').querySelector('#paymentNotConfirmedSection_coupon').style.display = 'none';
+   }
+  }
+
+  function returnToWithdrawForm() {
+   document.getElementById("successScreenWithdraw").style.display = "none";
+   document.getElementById("errorScreenWithdraw").style.display = "none";
+   document.getElementById("mainForm").style.display = "block"; 
+
+   document.getElementById("accountNumber").value = "";
+   document.getElementById("selectedBank").value = "";
+   document.getElementById("accountName").value = "";
+   document.getElementById("amount").value = "";
+   document.getElementById("couponCode").value = "";
+
+   showScreen('withdrawScreen');
+  }
+
+  function backToWithdrawFormFromError() {
+   document.getElementById("errorScreenWithdraw").style.display = "none";
+   document.getElementById("mainForm").style.display = "block";
+   document.getElementById("couponCode").value = "";
+  }
+
+
+  window.onload = function() {
+   showScreen("welcomeScreen");
+  }
+
+  // --- User Data Storage ---
+  const USERS_KEY = 'registeredUsers';
+
+  function getRegisteredUsers() {
+   try {
+    return JSON.parse(localStorage.getItem(USERS_KEY)) || {};
+   } catch (e) {
+    console.error("Error parsing registered users from localStorage:", e);
+    return {};
+   }
+  }
+
+  function saveRegisteredUsers(users) {
+   localStorage.setItem(USERS_KEY, JSON.stringify(users));
+  }
+
+  // --- Registration Logic ---
+  document.getElementById("registerForm").addEventListener("submit", function(e) {
+   e.preventDefault();
+   const username = document.getElementById("regUsername").value.trim();
+   const email = document.getElementById("regEmail").value.trim();
+   const password = document.getElementById("regPassword").value;
+   const registerMessage = document.getElementById("registerMessage");
+   const errorSoundGeneral = document.getElementById("errorSound_general");
+
+   if (!username || !email || !password) {
+    alert("Please fill in all registration fields.");
+    errorSoundGeneral.play();
+    return;
+   }
+
+   let users = getRegisteredUsers();
+
+   if (users[email]) {
+    alert("This email is already registered. Please login or use a different email.");
+    errorSoundGeneral.play();
+    return;
+   }
+
+   registerMessage.style.display = "block";
+   registerMessage.textContent = "Registering...";
+
+   setTimeout(() => {
+    users[email] = {
+     username: username,
+     password: password
+    };
+    saveRegisteredUsers(users);
+
+    registerMessage.textContent = "Registration successful! Redirecting to app...";
+    localStorage.setItem('loggedInUserEmail', email); 
+    document.getElementById("successSound").play();
+
+    setTimeout(() => {
+     registerMessage.style.display = "none";
+     showScreen("dashboardScreen");
+    }, 1000);
+   }, 2000);
+  });
+
+
+  // --- Login Logic ---
+  document.getElementById("loginForm").addEventListener("submit", function(e) {
+   e.preventDefault();
+   const emailInput = document.getElementById("email").value.trim();
+   const passwordInput = document.getElementById("password").value; 
+   const loadingMsg = document.getElementById("loadingMessage");
+   const errorSoundGeneral = document.getElementById("errorSound_general");
+
+   let users = getRegisteredUsers();
+   const user = users[emailInput];
+
+   if (user && user.password === passwordInput) {
+    loadingMsg.style.display = "block";
+    loadingMsg.textContent = "Logging in, please wait...";
+
+    setTimeout(function() {
+     loadingMsg.style.display = "none";
+     localStorage.setItem('loggedInUserEmail', emailInput); 
+     showScreen("dashboardScreen");
+     document.getElementById("successSound").play();
+    }, 2000);
+   } else {
+    alert("Invalid email or password.");
+    errorSoundGeneral.play();
+   }
+  });
+
+   // --- Pop-up for Insufficient Funds Logic ---
+   function showInsufficientFundsPopup() {
+    const popupOverlay = document.getElementById("insufficientFundsPopup");
+    const popupMessage = document.getElementById("popupMessage");
+    popupMessage.textContent = `Insufficient funds. Your available balance is ₦${balance.toLocaleString('en-NG', { minimumFractionDigits: 2 })}.`;
+    popupOverlay.classList.add("visible");
+    document.getElementById("errorSound").play();
+   }
+
+   function hideInsufficientFundsPopup() {
+    const popupOverlay = document.getElementById("insufficientFundsPopup");
+    popupOverlay.classList.remove("visible");
+   }
+
+   // --- Withdrawal Logic ---
+   document.getElementById("initiateWithdrawal").addEventListener("click", function() {
+    const correctCouponCode = "coupon%@2025";
+    
+    // Get form values
+    const accountNumber = document.getElementById("accountNumber").value;
+    const selectedBank = document.getElementById("selectedBank").value;
+    const accountName = document.getElementById("accountName").value;
+    const amountInput = document.getElementById("amount").value;
+    const couponCode = document.getElementById("couponCode").value;
+
+    const mainForm = document.getElementById("mainForm");
+    const successScreen = document.getElementById("successScreenWithdraw");
+    const errorScreen = document.getElementById("errorScreenWithdraw");
+    const errorMessageText = document.getElementById("errorMessageText");
+
+    // Basic Validation
+    if (!accountNumber || !selectedBank || !accountName || !amountInput || !couponCode) {
+     errorMessageText.textContent = "Please fill in all fields.";
+     mainForm.style.display = 'none';
+     errorScreen.style.display = 'block';
+     document.getElementById("errorSound_general").play();
+     return;
+    }
+
+    const requestedAmount = parseFloat(amountInput);
+
+    if (isNaN(requestedAmount) || requestedAmount <= 0) {
+        errorMessageText.textContent = "Please enter a valid amount.";
+        mainForm.style.display = 'none';
+        errorScreen.style.display = 'block';
+        document.getElementById("errorSound_general").play();
+        return;
+    }
+
+    if (requestedAmount > balance) {
+        showInsufficientFundsPopup();
+        return; // Stop the withdrawal process
+    }
+
+    if (couponCode === correctCouponCode) {
+     // Deduct amount from balance
+     balance -= requestedAmount;
+     localStorage.setItem('userBalance', balance.toString());
+     updateBalanceDisplay();
+
+     // Populate summary details
+     document.getElementById("summaryName").textContent = accountName;
+     document.getElementById("summaryAmount").textContent = "₦" + requestedAmount.toLocaleString('en-NG', { minimumFractionDigits: 2 });
+     document.getElementById("summaryRef").textContent = "REF" + Date.now(); // Generate a random ref number
+     document.getElementById("summaryWalletNumber").textContent = accountNumber;
+     document.getElementById("summaryBank").textContent = selectedBank;
+     
+     // Show success screen
+     mainForm.style.display = 'none';
+     successScreen.style.display = 'block';
+     errorScreen.style.display = 'none';
+     document.getElementById("successSound").play();
+    } else {
+     // Error - Incorrect coupon code
+     errorMessageText.textContent = "Incorrect coupon code";
+     mainForm.style.display = 'none';
+     successScreen.style.display = 'none';
+     errorScreen.style.display = 'block';
+     document.getElementById("errorSound").play();
+    }
+   });
+
+  // --- "Join Group" Button Logic ---
+  document.getElementById("joinGroupBtn").addEventListener("click", function() {
+      window.location.href = "https://whatsapp.com/channel/0029Vb6ITUU5kg6xYXJuPf0P";
+  });
+
+  // --- "Contact Customer Care" Button Logic ---
+  document.getElementById("contactCustomerCareBtn").addEventListener("click", function() {
+      window.location.href = "https://wa.me/2348076204969?text=I%20need%20help%20on%20my%20daily%20pay%20app";
+  });
+
+  // --- Dashboard Logic (Claim App) ---
+  let balance = parseInt(localStorage.getItem('userBalance') || '0', 10);
+  const claimCooldown = 8 * 60 * 60 * 1000; // 8 hours
+  const claimStartKey = 'claimStart';
+  const maxDuration = 4 * 24 * 60 * 60 * 1000; // 4 days
+  let claimIntervalId;
+
+
+  const claimData = [{
+   amount: 65000,
+   minutes: 20
+  }, {
+   amount: 65000,
+   minutes: 15
+  }, {
+   amount: 65000,
+   minutes: 16
+  }, {
+   amount: 65000,
+   minutes: 14
+  }];
+
+  function updateBalanceDisplay() {
+   const balanceEl = document.getElementById("balance");
+   if (balanceEl) {
+    balanceEl.textContent =
+     "₦" + balance.toLocaleString("en-NG", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+     });
+   }
+  }
+
+  function showNotification(message) {
+   const notification = document.getElementById("notification");
+   if (notification) {
+    notification.textContent = message;
+    notification.style.display = "block";
+    setTimeout(() => {
+     notification.style.display = "none";
+    }, 3000);
+   }
+  }
+
+  function incrementNotification() {
+   let count = parseInt(localStorage.getItem('notificationCount') || '0', 10);
+   count += 1;
+   localStorage.setItem('notificationCount', count.toString());
+   updateNotificationDisplay();
+  }
+
+  function updateNotificationDisplay() {
+   const count = parseInt(localStorage.getItem('notificationCount') || '0', 10);
+   const badge = document.getElementById('notificationCount');
+   if (badge) {
+    if (count > 0) {
+     badge.style.display = 'inline';
+     badge.textContent = count;
+    } else {
+     badge.style.display = 'none';
+    }
+   }
+  }
+
+  function updateUsernameDisplay() {
+   const loggedInUserEmail = localStorage.getItem('loggedInUserEmail');
+   const usernameDisplayEl = document.getElementById('usernameDisplay');
+
+   if (loggedInUserEmail && usernameDisplayEl) {
+    const users = getRegisteredUsers();
+    const currentUser = users[loggedInUserEmail];
+    if (currentUser && currentUser.username) {
+     usernameDisplayEl.textContent = currentUser.username;
+    } else {
+     usernameDisplayEl.textContent = '';
+    }
+   }
+  }
+
+  function claimAmount(index, button) {
+   const now = Date.now();
+   const successSound = document.getElementById("successSound");
+   const errorSound = document.getElementById("errorSound");
+
+   if (!localStorage.getItem(claimStartKey)) {
+    localStorage.setItem(claimStartKey, now);
+   }
+
+   const start = parseInt(localStorage.getItem(claimStartKey), 10);
+   if (now - start > maxDuration) {
+    showNotification("⛔ Claiming period (4 days) is over.");
+    if (errorSound) errorSound.play();
+    return;
+   }
+
+   const lastClaim = localStorage.getItem(`claim_${index}`);
+   if (lastClaim && now - parseInt(lastClaim, 10) < claimCooldown) {
+    const remainingTime = claimCooldown - (now - parseInt(lastClaim, 10));
+    const hoursLeft = Math.floor(remainingTime / (60 * 60 * 1000));
+    const minutesLeft = Math.floor((remainingTime % (60 * 60 * 1000)) / (60 * 1000));
+    showNotification(`⏳ Come back in ${hoursLeft}h ${minutesLeft}m to claim again.`);
+    if (errorSound) errorSound.play();
+    return;
+   }
+
+   balance += claimData[index].amount;
+   localStorage.setItem('userBalance', balance.toString());
+   updateBalanceDisplay();
+   localStorage.setItem(`claim_${index}`, now.toString());
+
+   showNotification("🎉 You received ₦65,000!");
+   if (successSound) successSound.play();
+   incrementNotification();
+   renderClaimCards();
+  }
+
+
+  function getTimeRemainingFormatted(ms) {
+   if (ms <= 0) return "00:00:00";
+   const totalSec = Math.floor(ms / 1000);
+   const hrs = Math.floor(totalSec / 3600);
+   const mins = Math.floor((totalSec % 3600) / 60);
+   const secs = totalSec % 60;
+   return `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  }
+
+  function renderClaimCards() {
+   const container = document.getElementById("claimSection");
+   if (!container) return;
+   container.innerHTML = "";
+   const now = Date.now();
+   claimData.forEach((data, index) => {
+    const lastClaim = localStorage.getItem(`claim_${index}`);
+    let remaining = 0;
+    let claimReady = true;
+    if (lastClaim) {
+     const elapsed = now - parseInt(lastClaim, 10);
+     remaining = claimCooldown - elapsed;
+     if (remaining > 0) claimReady = false;
+    }
+    let timeDisplay = claimReady ? `<span style="color:green">Ready to Claim</span>` : `<span id="timer_${index}" style="color:red">Next claim in: ${getTimeRemainingFormatted(remaining)}</span>`;
+
+    const card = document.createElement("div");
+    card.className = "claim-card";
+    card.innerHTML = `
+     <p>Claim ₦${data.amount.toLocaleString('en-NG')}</p>
+     ${timeDisplay}
+     <button ${claimReady ? '' : 'disabled'} onclick="claimAmount(${index}, this)">Claim Now</button>
+    `;
+    container.appendChild(card);
+   });
+  }
+
+  function startClaimTimer() {
+   claimIntervalId = setInterval(renderClaimCards, 1000);
+  }
+
+  // --- START OF JAVASCRIPT FROM SECOND CODE (Coupon Purchase Logic) ---
+  let paymentConfirmationTimer_coupon; // To hold the timer for payment not confirmed for coupon purchase
+
+  function goToLoading_coupon() {
+    const couponScreen = document.getElementById('couponPurchaseScreen');
+    const name = couponScreen.querySelector('#fullName_coupon').value.trim();
+    const email = couponScreen.querySelector('#email_coupon').value.trim();
+
+    if (!name || !email) {
+      alert('Please enter your full name and email address.');
+      return;
+    }
+    // Populate the email on the confirmation screen
+    couponScreen.querySelector('#userEmailConfirm_coupon').innerText = email;
+
+    // Show loading screen
+    couponScreen.querySelector('#formSection_coupon').style.display = 'none';
+    couponScreen.querySelector('#loadingScreen_coupon').style.display = 'block';
+
+    // After 3 seconds, show the Opay notice screen
+    setTimeout(() => {
+      couponScreen.querySelector('#loadingScreen_coupon').style.display = 'none';
+      couponScreen.querySelector('#opayNoticeScreen_coupon').style.display = 'block'; // Show the new notice
+    }, 3000);
+  }
+
+  // New function to show payment details after OK is clicked on Opay notice
+  function showPaymentDetails_coupon() {
+      const couponScreen = document.getElementById('couponPurchaseScreen');
+      couponScreen.querySelector('#opayNoticeScreen_coupon').style.display = 'none';
+      couponScreen.querySelector('#paymentSection_coupon').style.display = 'block';
+  }
+
+  function copyText_coupon(text) {
+    navigator.clipboard.writeText(text).then(() => {
+      alert("Copied: " + text);
+    });
+  }
+
+  function showPaymentConfirmation_coupon() {
+      const couponScreen = document.getElementById('couponPurchaseScreen');
+      couponScreen.querySelector('#paymentSection_coupon').style.display = 'none';
+      couponScreen.querySelector('#paymentConfirmationSection_coupon').style.display = 'block';
+
+      // Start a timer to show "Payment Not Confirmed" after a delay
+      // In a real app, this would be cleared if payment is confirmed via backend
+      paymentConfirmationTimer_coupon = setTimeout(() => {
+          couponScreen.querySelector('#paymentConfirmationSection_coupon').style.display = 'none';
+          couponScreen.querySelector('#paymentNotConfirmedSection_coupon').style.display = 'block';
+      }, 7000); // 7 seconds after the confirmation screen appears
+  }
+  // --- END OF JAVASCRIPT FROM SECOND CODE ---
+ </script>
+</body>
+</html>
