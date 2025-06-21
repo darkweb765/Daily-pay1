@@ -282,29 +282,35 @@
 
   .claim-section {
    display: grid;
-   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-   /* Responsive grid */
-   gap: 20px;
-   padding: 20px;
-   justify-items: center;
+   /* Changed to fixed 2-column grid */
+   grid-template-columns: repeat(2, 140px); /* Fixed width for two columns */
+   gap: 20px; /* Gap between cards */
+   padding: 20px; /* Padding around the grid */
+   justify-content: center; /* Center the grid within the available space */
+   align-items: center; /* Align items vertically in the center */
    width: 100%;
-   max-width: 800px;
-   /* Limit overall width */
+   max-width: 800px; /* Limit overall width */
   }
 
   .claim-card {
    background-color: white;
    border-radius: 15px;
    padding: 15px;
-   width: 140px;
-   /* Fixed width for cards */
+   width: 140px; /* Fixed width for cards */
+   height: 120px; /* Fixed height for cards to ensure consistency */
    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
    text-align: center;
+   display: flex; /* Use flexbox for internal alignment */
+   flex-direction: column; /* Stack content vertically */
+   justify-content: space-around; /* Distribute space around items */
+   align-items: center; /* Center items horizontally */
+   flex-shrink: 0; /* Prevent shrinking on smaller screens */
   }
 
   .claim-card p {
    margin: 5px 0;
    font-weight: bold;
+   color: black; /* Changed to black for better readability against white card */
   }
 
   .claim-card button {
@@ -1302,7 +1308,7 @@
       <p>If you need help, contact us here:</p>
       <div class="contact-info">
           <img src="https://img.icons8.com/ios-filled/50/000000/filled-message.png" alt="Email Icon" />
-          <a href="mailto:support@dailypay.com">dailypay619@gmail.com</a>
+          <a href="mailto:dailypay619@gmail.com">dailypay619@gmail.com</a>
       </div>
     </div>
  </div>
