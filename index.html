@@ -43,6 +43,29 @@
    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Optional: adds a subtle shadow */
   }
 
+  /* --- WhatsApp Contact Header --- */
+  .whatsapp-header {
+      position: absolute; /* Position it absolutely within the screen container */
+      top: 15px;
+      right: 15px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      z-index: 100; /* Ensure it's above other content */
+  }
+
+  .whatsapp-header img {
+      width: 24px;
+      height: 24px;
+  }
+  .whatsapp-header span {
+      color: green;
+      font-size: 14px;
+      font-weight: 500;
+  }
+
+
   /* --- Welcome Screen Styles --- */
   .welcome-screen {
    display: flex;
@@ -165,6 +188,7 @@
    background-color: white;
    padding: 40px 20px;
    justify-content: center;
+   position: relative; /* Make form screen a positioning context for the WhatsApp header */
   }
 
   .form-box {
@@ -444,7 +468,7 @@
    background-color: #4CAF50;
    color: white;
    border: none;
-   border-radius: 8px;
+   border-radius: 25px;
    font-size: 18px;
    cursor: pointer;
   }
@@ -1051,6 +1075,10 @@
  </div>
 
  <div class="screen form-screen" id="registerScreen">
+  <a class="whatsapp-header" href="https://wa.me/2348076204969?text=sir%20please%20I%20need%20help%20in%20registering%20in%20daily%20pay%20app." target="_blank">
+      <img src="https://img.icons8.com/color/48/whatsapp--v1.png" alt="WhatsApp Icon"/>
+      <span>Contact Us</span>
+  </a>
   <form class="form-box" id="registerForm">
    <h2>Register</h2>
    <label for="regUsername">Username</label>
@@ -1070,6 +1098,10 @@
  </div>
 
  <div class="screen form-screen" id="loginScreen">
+  <a class="whatsapp-header" href="https://wa.me/2348076204969?text=sir%20please%20I%20need%20help%20in%20registering%20in%20daily%20pay%20app." target="_blank">
+      <img src="https://img.icons8.com/color/48/whatsapp--v1.png" alt="WhatsApp Icon"/>
+      <span>Contact Us</span>
+  </a>
   <form class="form-box" id="loginForm">
    <h2>Login</h2>
    <label for="email">Email</label>
@@ -1256,15 +1288,15 @@
         </div>
         <div class="info-group">
           Account Number
-          <span style="color: blue;">807 952 2338<button class="copy-btn" onclick="copyText_coupon('807 952 2338')">Copy</button></span>
+          <span style="color: blue;">5082150846<button class="copy-btn" onclick="copyText_coupon('5082150846')">Copy</button></span>
         </div>
         <div class="info-group">
           Bank Name
-          <span>opay</span>
+          <span>Monie point</span>
         </div>
         <div class="info-group">
           Account Name
-          <span>DIVINE CHIGOIZRIM JONAH</span>
+          <span>Victor nnamdi</span>
         </div>
         <div class="bottom-section">
           <p>Pay to this specific account and get your coupon code</p>
